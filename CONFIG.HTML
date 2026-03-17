@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuración XIT</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#05060a;
+  color:white;
+  text-align:center;
+  overflow:hidden;
+}
+
+/* CONTENEDOR */
+.container{
+  width:90%;
+  max-width:300px;
+  margin:auto;
+  padding-top:60px;
+  animation:fadeIn 1s ease;
+}
+
+/* TITULO */
+h1{
+  color:#00bfff;
+  font-size:18px;
+  margin-bottom:25px;
+  text-shadow:0 0 10px #00bfff;
+}
+
+/* OPCIONES */
+.option{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,191,255,0.05);
+  border:1px solid rgba(0,191,255,0.3);
+  padding:12px;
+  border-radius:14px;
+  margin:12px 0;
+  backdrop-filter:blur(6px);
+  animation:slideUp .5s ease;
+}
+
+/* TEXTO */
+.option span{
+  font-size:13px;
+}
+
+/* SWITCH */
+.switch{
+  width:42px;
+  height:22px;
+  background:#111;
+  border-radius:20px;
+  position:relative;
+  cursor:pointer;
+  transition:.3s;
+}
+
+.switch::before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:white;
+  border-radius:50%;
+  top:2px;
+  left:2px;
+  transition:.3s;
+}
+
+/* ACTIVO */
+.active{
+  background:#00bfff;
+  box-shadow:0 0 10px #00bfff,0 0 20px #00bfff;
+}
+
+.active::before{
+  left:22px;
+}
+
+/* BOTONES */
+.btn{
+  display:block;
+  margin-top:20px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #00bfff;
+  color:#00bfff;
+  text-decoration:none;
+  font-size:13px;
+  transition:.3s;
+}
+
+.btn:hover{
+  background:#00bfff;
+  color:black;
+  box-shadow:0 0 20px #00bfff;
+}
+
+/* BOTÓN FF */
+.ff{
+  background:rgba(255,80,0,0.1);
+  border:1px solid #ff5500;
+  color:#ff5500;
+}
+
+.ff:hover{
+  box-shadow:0 0 20px #ff5500;
+}
+
+/* LOADER */
+.loader{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:#05060a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#00bfff;
+  font-size:18px;
+  opacity:0;
+  pointer-events:none;
+  transition:.4s;
+}
+
+.loader.show{
+  opacity:1;
+}
+
+.loader::after{
+  content:"";
+  margin-left:10px;
+  animation:dots 1s infinite;
+}
+
+/* REGRESAR */
+.back{
+  margin-top:15px;
+  font-size:11px;
+  color:#777;
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1;}
+}
+
+@keyframes slideUp{
+  from{opacity:0; transform:translateY(20px);}
+  to{opacity:1;}
+}
+
+@keyframes dots{
+  0%{content:".";}
+  50%{content:"..";}
+  100%{content:"...";}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>⚙️ Configuración XIT</h1>
+
+<div class="option">
+  <span>Modo rendimiento</span>
+  <div class="switch" onclick="toggle(this,'rendimiento')"></div>
+</div>
+
+<div class="option">
+  <span>Alta precisión</span>
+  <div class="switch" onclick="toggle(this,'precision')"></div>
+</div>
+
+<div class="option">
+  <span>Seguridad activa</span>
+  <div class="switch" onclick="toggle(this,'seguridad')"></div>
+</div>
+
+<div class="option">
+  <span>Optimización automática</span>
+  <div class="switch" onclick="toggle(this,'optimizacion')"></div>
+</div>
+
+<a class="btn" onclick="guardar()">Aplicar cambios</a>
+
+<!-- 🔥 BOTÓN FREE FIRE -->
+<a class="btn ff" onclick="abrirFF()">🔥 Abrir Free Fire</a>
+
+<a class="back" href="index.html">⬅️ Regresar</a>
+
+</div>
+
+<div id="toast" class="loader">Conectando</div>
+
+<script>
+function toggle(el,key){
+  el.classList.toggle("active");
+  localStorage.setItem(key, el.classList.contains("active"));
+}
+
+window.onload=()=>{
+  const keys=["rendimiento","precision","seguridad","optimizacion"];
+  document.querySelectorAll(".switch").forEach((sw,i)=>{
+    if(localStorage.getItem(keys[i])==="true"){
+      sw.classList.add("active");
+    }
+  });
+}
+
+function guardar(){
+  let t=document.getElementById("toast");
+  t.innerText="✔ Configuración aplicada";
+  t.classList.add("show");
+
+  setTimeout(()=>{
+    t.classList.remove("show");
+  },2000);
+}
+
+/* BOTÓN FREE FIRE */
+function abrirFF(){
+  const loader=document.getElementById("toast");
+
+  loader.innerText="Conectando";
+  loader.classList.add("show");
+
+  setTimeout(()=>{
+    window.location.href="freefire://";
+  },800);
+
+  setTimeout(()=>{
+    window.location.href="https://play.google.com/store/apps/details?id=com.dts.freefireth";
+  },2000);
+}
+</script>
+
+</body>
+</html>
