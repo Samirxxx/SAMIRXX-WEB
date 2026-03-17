@@ -42,7 +42,7 @@ font-size:17px;
 color:#00bfff;
 position:relative;
 display:inline-block;
-margin-bottom:30px;
+margin-bottom:25px;
 animation:glow 2s infinite alternate;
 }
 
@@ -96,7 +96,27 @@ border-color:#00ffcc;
 box-shadow:0 0 20px #00ffcc;
 }
 
-/* BOTON REGRESAR */
+/* BOTON REGRESAR INTERNO */
+.back-local{
+margin-top:20px;
+padding:10px;
+width:100%;
+border-radius:12px;
+border:1px solid #666;
+background:rgba(255,255,255,0.05);
+color:#ccc;
+cursor:pointer;
+font-size:12px;
+transition:.25s;
+}
+
+.back-local:active{
+transform:scale(.92);
+background:#00bfff;
+color:black;
+}
+
+/* BOTON GLOBAL */
 .back-btn{
 position:fixed;
 bottom:20px;
@@ -112,13 +132,6 @@ color:#ccc;
 font-size:12px;
 cursor:pointer;
 z-index:2;
-transition:.25s;
-}
-
-.back-btn:active{
-transform:translateX(-50%) scale(.92);
-background:#00bfff;
-color:black;
 }
 
 /* PAGINAS */
@@ -191,6 +204,8 @@ to{opacity:1;}
 
 <button class="link" onclick="toggle(this)">FPS BOOST</button>
 <button class="link" onclick="toggle(this)">Modo PRO</button>
+
+<button class="back-local" onclick="openPage('home')">⬅️ Regresar</button>
 </div>
 
 <!-- RENDIMIENTO -->
@@ -199,6 +214,8 @@ to{opacity:1;}
 
 <button class="link" onclick="toggle(this)">Mejorar FPS</button>
 <button class="link" onclick="toggle(this)">Reducir LAG</button>
+
+<button class="back-local" onclick="openPage('home')">⬅️ Regresar</button>
 </div>
 
 <!-- AJUSTES -->
@@ -207,6 +224,8 @@ to{opacity:1;}
 
 <button class="link" onclick="toggle(this)">Sensibilidad PRO</button>
 <button class="link" onclick="toggle(this)">HUD PRO</button>
+
+<button class="back-local" onclick="openPage('home')">⬅️ Regresar</button>
 </div>
 
 <!-- SEGURIDAD -->
@@ -215,41 +234,36 @@ to{opacity:1;}
 
 <button class="link" onclick="toggle(this)">Anti-Ban</button>
 <button class="link" onclick="toggle(this)">Modo Seguro</button>
+
+<button class="back-local" onclick="openPage('home')">⬅️ Regresar</button>
 </div>
 
 </div>
 
 <!-- BOTON GLOBAL -->
-<button class="back-btn" onclick="back()">⬅️ Regresar</button>
+<button class="back-btn" onclick="back()">⬅️ Salir</button>
 
 <div id="loader" class="loader">Abriendo juego...</div>
 
 <script>
 
-/* CAMBIO DE PAGINAS */
 function openPage(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
-/* REGRESAR */
+function toggle(btn){
+btn.classList.toggle("active-btn");
+}
+
 function back(){
-document.body.style.opacity="0";
-setTimeout(()=>{
 if(history.length>1){
 history.back();
 }else{
 window.location.href="index.html";
 }
-},300);
 }
 
-/* ACTIVAR */
-function toggle(btn){
-btn.classList.toggle("active-btn");
-}
-
-/* FREE FIRE */
 function abrirFF(){
 const loader=document.getElementById("loader");
 loader.classList.add("show");
