@@ -3,221 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Samirxx</title>
+<title>Samirxx Network</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
+
 body{
 margin:0;
 font-family:'Inter',sans-serif;
 background:#000;
 color:white;
 overflow-x:hidden;
-transition:opacity .3s;
+animation:entrada 1s ease;
 }
 
-/* FONDO */
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:0;
-pointer-events:none;
+@keyframes entrada{
+from{opacity:0;transform:translateY(40px);}
+to{opacity:1;transform:translateY(0);}
+}
+
+/* HEADER */
+
+.header{
+text-align:center;
+padding:18px;
+font-size:18px;
+letter-spacing:2px;
+color:#1d9bf0;
+font-weight:600;
+}
+
+/* SERVICIOS ONLINE */
+
+.status{
+text-align:center;
+font-size:12px;
+margin-bottom:25px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:8px;
+font-weight:600;
+color:#00ff9c;
+animation:glow 2s infinite;
+}
+
+.status::before{
+content:"";
+width:8px;
+height:8px;
+background:#00ff9c;
+border-radius:50%;
+display:inline-block;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(0,255,156,.7);}
+70%{box-shadow:0 0 0 10px rgba(0,255,156,0);}
+100%{box-shadow:0 0 0 0 rgba(0,255,156,0);}
+}
+
+@keyframes glow{
+0%{text-shadow:0 0 5px #00ff9c;}
+50%{text-shadow:0 0 15px #00ff9c;}
+100%{text-shadow:0 0 5px #00ff9c;}
 }
 
 /* CONTENEDOR */
+
 .container{
-position:relative;
-z-index:1;
-width:85%;
-max-width:220px;
+width:92%;
+max-width:300px;
 margin:auto;
-padding-top:40px;
 text-align:center;
-animation:fadeIn 1s ease;
+padding-bottom:120px;
 }
 
-/* AVATAR */
+/* PERFIL */
+
+.profile{
+background:rgba(255,255,255,.05);
+border-radius:16px;
+padding:16px;
+margin-bottom:22px;
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(6px);
+}
+
 .avatar{
-width:60px;
-height:60px;
+width:65px;
+height:65px;
 border-radius:50%;
-border:2px solid red;
-box-shadow:0 0 15px red;
-animation:aura 2s infinite;
+border:2px solid #1d9bf0;
+box-shadow:0 0 20px #1d9bf0;
+animation:aura 3s infinite;
 }
 
-.avatar.small{
-width:45px;
-height:45px;
+@keyframes aura{
+0%{box-shadow:0 0 10px #1d9bf0;}
+50%{box-shadow:0 0 25px #1d9bf0;}
+100%{box-shadow:0 0 10px #1d9bf0;}
 }
 
-/* TEXTO */
-h1,.user2{
-font-size:14px;
-color:#ff4444;
-margin:5px 0;
+.badges{
+font-size:10px;
+margin-top:8px;
+line-height:1.5;
+opacity:.8;
 }
 
 /* BOTONES */
+
 .link{
 display:block;
-padding:8px;
-margin:5px 0;
+padding:10px;
+margin:9px 0;
 border-radius:10px;
-background:rgba(255,0,0,0.08);
-border:1px solid red;
+background:transparent;
+border:1px solid rgba(255,255,255,.1);
+text-decoration:none;
 color:white;
-font-size:11px;
-transition:.25s;
+font-size:12px;
+transition:.3s;
 position:relative;
 overflow:hidden;
 }
 
-.link:active{
-transform:scale(.9);
-box-shadow:0 0 25px red;
+.link:hover{
+transform:translateY(-3px) scale(1.03);
+box-shadow:0 0 18px rgba(29,155,240,.8);
+border:1px solid #1d9bf0;
 }
 
-/* SEGUNDO PERFIL */
-.section.second{
-margin-top:40px;
-}
-
-/* BOTÓN SIGUIENTE PRO */
-.next-btn{
-margin-top:25px;
-font-weight:bold;
-animation:pulseBtn 1.5s infinite;
-}
-
-/* FLECHA ANIMADA */
-.next-btn::after{
-content:"➤";
+.link::before{
+content:"";
 position:absolute;
-right:10px;
-animation:arrowMove 1s infinite;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
+transition:.6s;
 }
 
-/* FOOTER */
+.link:hover::before{
+left:100%;
+}
+
+.sep{
+margin:32px 0 12px;
+font-size:10px;
+letter-spacing:2px;
+opacity:.6;
+}
+
 .footer{
-font-size:9px;
 margin-top:10px;
-color:#666;
+font-size:9px;
+opacity:.5;
 }
 
-/* ANIMACIONES */
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(20px);}
-to{opacity:1;}
+/* FONDO ANIMADO */
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
 }
 
-@keyframes aura{
-0%{box-shadow:0 0 5px red;}
-50%{box-shadow:0 0 25px red;}
-100%{box-shadow:0 0 5px red;}
-}
-
-@keyframes pulseBtn{
-0%{transform:scale(1);}
-50%{transform:scale(1.05);}
-100%{transform:scale(1);}
-}
-
-@keyframes arrowMove{
-0%{transform:translateX(0);}
-50%{transform:translateX(5px);}
-100%{transform:translateX(0);}
-}
 </style>
 </head>
 
 <body>
 
-<canvas id="canvas"></canvas>
+<canvas id="bg"></canvas>
+
+<div class="header">
+SAMIRXX NETWORK
+</div>
+
+<div class="status">
+SERVICIOS ONLINE
+</div>
 
 <div class="container">
 
-<!-- PERFIL 1 -->
+<div class="profile">
 <img src="images/20260316210408.png" class="avatar">
-<h1>Samirxx</h1>
 
-<div class="section">
-<a class="link" href="https://wa.me/526151160719?text=Hola%20quiero%20info" target="_blank">📲 WhatsApp</a>
-<a class="link" href="https://wa.me/526151160719?text=PROXY%20IPHONE" target="_blank">PROXY IPHONE</a>
-<a class="link" href="https://wa.me/526151160719?text=AIM%20DRAG" target="_blank">AIM DRAG</a>
-<a class="link" href="https://wa.me/526151160719?text=AIM%20BODY" target="_blank">AIM BODY</a>
+<div class="badges">
+✔ Servicio verificado<br>
+✔ Entrega inmediata<br>
+✔ Soporte 24/7
+</div>
 </div>
 
-<!-- PERFIL 2 -->
-<div class="section second">
-<img src="images/20260316210415.png" class="avatar small">
-<p class="user2">@47Renovado</p>
+<a class="link" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Proxy%20FF">Proxy iPhone</a>
 
-<a class="link" href="https://wa.me/573025434258?text=Hola" target="_blank">WhatsApp</a>
-<a class="link" href="https://wa.me/573025434258?text=AIMBOT%20CUELLO" target="_blank">AIMBOT CUELLO</a>
-<a class="link" href="https://wa.me/573025434258?text=HOLOGRAMA" target="_blank">HOLOGRAMA</a>
-<a class="link" href="https://wa.me/573025434258?text=BALAS%20MAGICAS" target="_blank">BALAS MÁGICAS</a>
+<a class="link" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Aim%20Drag">Aim Drag</a>
 
-<!-- BOTÓN SIGUIENTE -->
-<a class="link next-btn" href="next.html" onclick="fadeOut(event)">Siguiente</a>
+<a class="link" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Aim%20Body">Aim Body</a>
+
+<a class="link" href="https://www.mediafire.com/file/jkr4mo3jfvbjpl3/FREEFIRE_1.120.X_1770696911.ipa/file">IPA Gratis</a>
+
+<div class="sep">COLABORADOR</div>
+
+<div class="profile">
+<img src="images/20260316210415.png" class="avatar" style="width:50px;height:50px;">
+<div style="margin-top:6px;font-size:13px">@47Renovado</div>
 </div>
 
-<div class="footer">© 2026 Samirxx ⚡</div>
+<a class="link" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Aimbot%20Cuello">Aimbot Cuello</a>
+
+<a class="link" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Holograma">Holograma</a>
+
+<a class="link" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Balas%20Magicas">Balas Mágicas</a>
+
+<div class="footer">
+© 2026 Samirxx
+</div>
 
 </div>
 
 <script>
-/* TRANSICIÓN */
-function fadeOut(e){
-e.preventDefault();
-document.body.style.opacity="0";
-setTimeout(()=>{
-window.location=e.target.href;
-},300);
-}
 
-/* FONDO */
-const canvas=document.getElementById("canvas");
+/* FONDO LINEAS AZULES */
+
+const canvas=document.getElementById("bg");
 const ctx=canvas.getContext("2d");
 
-function resize(){
 canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
-}
-resize();
-window.addEventListener("resize",resize);
 
-let particles=[];
-for(let i=0;i<60;i++){
-particles.push({
+let lines=[];
+
+for(let i=0;i<40;i++){
+lines.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-dx:(Math.random()-0.5)*1,
-dy:(Math.random()-0.5)*1
-});
+speed:Math.random()*1+0.5,
+length:Math.random()*120+40
+})
 }
 
 function animate(){
+
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-particles.forEach(p=>{
-p.x+=p.dx;
-p.y+=p.dy;
+lines.forEach(l=>{
 
 ctx.beginPath();
-ctx.arc(p.x,p.y,1.5,0,Math.PI*2);
-ctx.fillStyle="red";
-ctx.fill();
+ctx.moveTo(l.x,l.y);
+ctx.lineTo(l.x+l.length,l.y+l.length);
 
-if(p.x<0||p.x>canvas.width)p.dx*=-1;
-if(p.y<0||p.y>canvas.height)p.dy*=-1;
+ctx.strokeStyle="rgba(29,155,240,0.2)";
+ctx.lineWidth=1.5;
+ctx.stroke();
+
+l.x+=l.speed;
+l.y+=l.speed;
+
+if(l.x>canvas.width||l.y>canvas.height){
+l.x=Math.random()*canvas.width;
+l.y=0;
+}
+
 });
 
 requestAnimationFrame(animate);
+
 }
+
 animate();
+
 </script>
 
 </body>
