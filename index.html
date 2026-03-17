@@ -30,7 +30,7 @@ canvas{
   position:relative;
   z-index:1;
   width:85%;
-  max-width:210px; /* MUY PEQUEÑO */
+  max-width:210px;
   margin:auto;
   padding:8px 0;
   text-align:center;
@@ -89,6 +89,11 @@ p{
   transform:scale(0.95);
 }
 
+/* BOTÓN SIGUIENTE SEPARADO */
+.next-btn{
+  margin-top:18px; /* AQUÍ LA SEPARACIÓN */
+}
+
 /* FOOTER */
 .footer{
   font-size:9px;
@@ -126,7 +131,8 @@ p{
     <a class="link" href="https://wa.me/573025434258?text=HOLOGRAMA" target="_blank">HOLOGRAMA</a>
     <a class="link" href="https://wa.me/573025434258?text=BALAS MAGICAS" target="_blank">BALAS MÁGICAS</a>
 
-    <a class="link" href="next.html">Siguiente ➡️</a>
+    <!-- BOTÓN MÁS ABAJO -->
+    <a class="link next-btn" href="next.html">Siguiente ➡️</a>
   </div>
 
   <div class="footer">© 2026 Samirxx ⚡</div>
@@ -144,7 +150,6 @@ function resizeCanvas(){
 window.addEventListener('resize',resizeCanvas);
 resizeCanvas();
 
-/* PARTÍCULAS MÁS PEQUEÑAS */
 const particles=[];
 for(let i=0;i<80;i++){
   particles.push({
