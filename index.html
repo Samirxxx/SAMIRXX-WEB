@@ -12,76 +12,64 @@ body {
   font-family: Arial;
   text-align: center;
   color: white;
-  overflow-x: hidden;
 }
 
-/* FONDO PARTÍCULAS */
+/* FONDO */
 body::before {
   content: "";
   position: fixed;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(red 2px, transparent 2px);
-  background-size: 40px 40px;
-  animation: animar 8s linear infinite;
-  opacity: 0.4;
+  background-image: radial-gradient(red 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: move 10s linear infinite;
+  opacity: 0.3;
 }
 
-@keyframes animar {
+@keyframes move {
   from {transform: translateY(0);}
-  to {transform: translateY(200px);}
+  to {transform: translateY(100px);}
+}
+
+/* CONTENEDOR */
+.container {
+  max-width: 350px;
+  margin: auto;
+  padding-top: 20px;
 }
 
 /* IMÁGENES */
 img {
-  width: 130px;
-  height: 130px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  border: 4px solid red;
-  margin-top: 25px;
-  box-shadow: 0 0 25px red, 0 0 50px red;
+  border: 3px solid red;
+  box-shadow: 0 0 15px red;
 }
 
 /* TEXTO */
 h1 {
+  font-size: 22px;
   color: red;
-  text-shadow: 0 0 10px red, 0 0 20px red;
+  margin: 10px 0;
 }
 
 /* BOTONES */
 .btn {
   display: block;
-  background: linear-gradient(45deg, red, #ff3c3c);
+  background: red;
   color: white;
-  padding: 16px;
-  margin: 12px auto;
-  width: 85%;
-  border-radius: 15px;
+  padding: 12px;
+  margin: 8px auto;
+  width: 90%;
+  border-radius: 10px;
   text-decoration: none;
-  box-shadow: 0 0 20px red;
-  transition: 0.3s;
-  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 0 10px red;
 }
 
-.btn:hover {
-  transform: scale(1.07);
-  box-shadow: 0 0 35px red, 0 0 60px red;
-}
-
-/* EFECTO LATIDO */
-@keyframes latido {
-  0% {transform: scale(1);}
-  50% {transform: scale(1.05);}
-  100% {transform: scale(1);}
-}
-
-.btn {
-  animation: latido 2s infinite;
-}
-
-/* ESPACIO ENTRE SECCIONES */
 .section {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 </style>
 
@@ -89,27 +77,31 @@ h1 {
 
 <body>
 
-<div class="section">
-  <img src="images/20260316210408.png">
-  <h1>Samirxx</h1>
+<div class="container">
 
-  <a class="btn" href="#">WhatsApp</a>
-  <a class="btn" href="#">PROXY IPHONE</a>
-  <a class="btn" href="#">AIM DRAG</a>
-  <a class="btn" href="#">AIM BODY</a>
+  <div class="section">
+    <img src="images/20260316210408.png">
+    <h1>Samirxx</h1>
+
+    <!-- CAMBIA EL NÚMERO -->
+    <a class="btn" href="https://wa.me/521XXXXXXXXXX" target="_blank">WhatsApp</a>
+    <a class="btn" href="#">PROXY IPHONE</a>
+    <a class="btn" href="#">AIM DRAG</a>
+    <a class="btn" href="#">AIM BODY</a>
+  </div>
+
+  <div class="section">
+    <img src="images/20260316210415.png">
+    <h1>@47Renovado</h1>
+
+    <!-- CAMBIA EL NÚMERO -->
+    <a class="btn" href="https://wa.me/521XXXXXXXXXX" target="_blank">WhatsApp</a>
+    <a class="btn" href="#">AIMBOT CUELLO</a>
+    <a class="btn" href="#">HOLOGRAMA</a>
+    <a class="btn" href="#">BALAS MÁGICAS</a>
+  </div>
+
 </div>
-
-<div class="section">
-  <img src="images/20260316210415.png">
-  <h1>@47Renovado</h1>
-
-  <a class="btn" href="#">WhatsApp</a>
-  <a class="btn" href="#">AIMBOT CUELLO</a>
-  <a class="btn" href="#">HOLOGRAMA</a>
-  <a class="btn" href="#">BALAS MÁGICAS</a>
-</div>
-
-<p style="opacity:0.5;">© 2026 Samirxx ⚡</p>
 
 </body>
 </html>
