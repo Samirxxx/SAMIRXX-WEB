@@ -1,66 +1,94 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Samirxx</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samirxx</title>
 
-  <style>
-    body {
-      background: black;
-      color: white;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
+<style>
+body {
+  margin: 0;
+  background: black;
+  font-family: Arial;
+  text-align: center;
+  color: white;
+  overflow-x: hidden;
+}
 
-    img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid red;
-      margin-top: 20px;
-    }
+/* PARTÍCULAS */
+body::before {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(red 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: move 10s linear infinite;
+  opacity: 0.3;
+}
 
-    h1 {
-      color: red;
-    }
+@keyframes move {
+  from {transform: translateY(0);}
+  to {transform: translateY(100px);}
+}
 
-    .btn {
-      display: block;
-      background: red;
-      color: white;
-      padding: 15px;
-      margin: 10px auto;
-      width: 80%;
-      border-radius: 10px;
-      text-decoration: none;
-    }
-  </style>
+/* IMÁGENES */
+img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid red;
+  margin-top: 20px;
+  box-shadow: 0 0 20px red;
+}
+
+/* TEXTO */
+h1 {
+  color: red;
+  text-shadow: 0 0 10px red;
+}
+
+/* BOTONES */
+.btn {
+  display: block;
+  background: red;
+  color: white;
+  padding: 15px;
+  margin: 10px auto;
+  width: 80%;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 0 15px red;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px red;
+}
+</style>
+
 </head>
 
 <body>
 
-  <!-- IMAGEN 1 -->
-  <img src="images/20260316210408.png" alt="perfil">
+<img src="images/20260316210408.png">
+<h1>Samirxx</h1>
 
-  <h1>Samirxx</h1>
+<a class="btn" href="#">WhatsApp</a>
+<a class="btn" href="#">PROXY IPHONE</a>
+<a class="btn" href="#">AIM DRAG</a>
+<a class="btn" href="#">AIM BODY</a>
 
-  <a class="btn" href="#">WhatsApp</a>
-  <a class="btn" href="#">PROXY IPHONE</a>
-  <a class="btn" href="#">AIM DRAG</a>
-  <a class="btn" href="#">AIM BODY</a>
+<br><br>
 
-  <br><br>
+<img src="images/20260316210415.png">
+<h1>@47Renovado</h1>
 
-  <!-- IMAGEN 2 -->
-  <img src="images/20260316210415.png" alt="perfil2">
-
-  <h1>@47Renovado</h1>
-
-  <a class="btn" href="#">WhatsApp</a>
-  <a class="btn" href="#">AIMBOT CUELLO</a>
-  <a class="btn" href="#">HOLOGRAMA</a>
-  <a class="btn" href="#">BALAS MÁGICAS</a>
+<a class="btn" href="#">WhatsApp</a>
+<a class="btn" href="#">AIMBOT CUELLO</a>
+<a class="btn" href="#">HOLOGRAMA</a>
+<a class="btn" href="#">BALAS MÁGICAS</a>
 
 </body>
 </html>
