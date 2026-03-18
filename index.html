@@ -3,330 +3,411 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Samirxx Network</title>
+<title>Samirxx</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#0a0a0f">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
 
 <style>
-
-body{
-margin:0;
-font-family:'Inter',sans-serif;
-background:#000;
-color:white;
-overflow-x:hidden;
-animation:entrada 1s ease;
+:root {
+    --bg: #05050a;
+    --accent: #00ffff;
+    --glow: rgba(0,255,255,0.85);
+    --text: #f0ffff;
+    --card: rgba(10,20,40,0.8);
 }
 
-@keyframes entrada{
-from{opacity:0;transform:translateY(40px);}
-to{opacity:1;transform:translateY(0);}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+    font-family:'Inter',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    font-size:11px;
+    touch-action: manipulation;
 }
 
-/* HEADER */
-
-.header{
-text-align:center;
-padding:18px;
-font-size:18px;
-letter-spacing:2px;
-color:#1d9bf0;
-font-weight:600;
+/* ANIMACIÓN DE BORDE NEÓN QUE SE MUEVE (PUM) */
+.neon-border {
+    position: relative;
+    border: 1px solid transparent;
+    background: linear-gradient(var(--bg), var(--bg)) padding-box;
+    overflow: hidden;
+}
+.neon-border::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff, #ff00ff);
+    background-size: 300% 300%;
+    animation: borderFlow 4s linear infinite;
+    border-radius: inherit;
+    filter: blur(2px);
+    z-index: -1;
+}
+.neon-border::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff, #ff00ff);
+    background-size: 300% 300%;
+    animation: borderFlow 4s linear infinite reverse;
+    border-radius: inherit;
+    z-index: -1;
+}
+@keyframes borderFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-/* SERVICIOS ONLINE */
+/* Resto de animaciones (mismas de antes, pero más ligeras) */
+@keyframes glitch { 0% { text-shadow:1.5px 0 #ff00ff,-1.5px 0 #00ffff; } 20% { text-shadow:-1.5px 0 #ff00ff,1.5px 0 #00ffff; transform:translate(-1px,1px); } 40% { text-shadow:1.5px 0 #ff00ff,-1.5px 0 #00ffff; transform:translate(1px,-1px); } 100% { text-shadow:none; transform:translate(0); } }
 
-.status{
-text-align:center;
-font-size:12px;
-margin-bottom:25px;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:8px;
-font-weight:600;
-color:#00ff9c;
-animation:glow 2s infinite;
+@keyframes pulseGlow { 0%,100% { box-shadow:0 0 4px var(--glow); } 50% { box-shadow:0 0 18px var(--glow); } }
+
+@keyframes bounceIn { 0% { opacity:0; transform:translateY(8px) scale(0.8); } 60% { opacity:1; transform:translateY(-3px) scale(1.05); } 100% { transform:translateY(0) scale(1); } }
+
+@keyframes flicker { 0%,100% { opacity:1; } 50% { opacity:0.7; } }
+
+@keyframes scan { 0% { transform:translateY(-200%); } 100% { transform:translateY(200%); } }
+
+@keyframes ripple { 0% { transform:scale(0); opacity:0.5; } 100% { transform:scale(3); opacity:0; } }
+
+/* HEADER mini */
+.header {
+    text-align:center;
+    padding:5px 4px 2px;
+    font-size:14px;
+    letter-spacing:1.2px;
+    color:var(--accent);
+    font-weight:700;
+    animation:glitch 1.8s infinite alternate;
 }
 
-.status::before{
-content:"";
-width:8px;
-height:8px;
-background:#00ff9c;
-border-radius:50%;
-display:inline-block;
-animation:pulse 1.5s infinite;
+/* STATUS mini */
+.status {
+    text-align:center;
+    font-size:9px;
+    margin:2px 0 8px;
+    color:#00ffcc;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    animation:pulseGlow 4s infinite;
 }
 
-@keyframes pulse{
-0%{box-shadow:0 0 0 0 rgba(0,255,156,.7);}
-70%{box-shadow:0 0 0 10px rgba(0,255,156,0);}
-100%{box-shadow:0 0 0 0 rgba(0,255,156,0);}
+/* PERFIL ultra mini */
+.profile {
+    background:var(--card);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(0,255,255,0.55);
+    border-radius:7px;
+    padding:5px 4px;
+    margin:6px 0;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+}
+.profile::before {
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(transparent,rgba(0,255,255,0.18),transparent);
+    animation:scan 6s linear infinite;
+}
+.avatar {
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:1.5px solid var(--accent);
+    box-shadow:0 0 10px var(--glow);
+    margin-bottom:3px;
+    animation:pulseGlow 2.5s infinite;
+}
+.badges {
+    font-size:8px;
+    line-height:1.2;
+    opacity:0.9;
 }
 
-@keyframes glow{
-0%{text-shadow:0 0 5px #00ff9c;}
-50%{text-shadow:0 0 15px #00ff9c;}
-100%{text-shadow:0 0 5px #00ff9c;}
+/* OFERTA mini */
+.oferta {
+    background:rgba(255,60,60,0.35);
+    border:1px solid #ff3333;
+    color:#ffcccc;
+    padding:5px;
+    border-radius:6px;
+    margin:6px 0;
+    font-size:10px;
+    font-weight:600;
+    text-align:center;
+    animation:flicker 3s infinite, pulseGlow 5s infinite;
 }
 
-/* CONTENEDOR */
-
-.container{
-width:92%;
-max-width:300px;
-margin:auto;
-text-align:center;
-padding-bottom:120px;
+/* UPDATE mini */
+.update {
+    text-align:center;
+    font-size:8px;
+    color:#00ff99;
+    margin:3px 0 6px;
+    opacity:0.8;
+    animation:flicker 5s infinite;
 }
 
-/* PERFIL */
+/* BOTONES ultra mini */
+.link {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:6px 10px;
+    margin:5px 0;
+    border-radius:6px;
+    border:1px solid rgba(0,255,255,0.65);
+    color:var(--text);
+    font-size:11px;
+    font-weight:600;
+    text-decoration:none;
+    position:relative;
+    overflow:hidden;
+    animation:bounceIn 0.5s forwards;
+}
+.link::after {
+    content:"";
+    position:absolute;
+    top:50%; left:50%;
+    width:0; height:0;
+    background:rgba(0,255,255,0.4);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+.link:active::after {
+    width:140px; height:140px;
+    animation:ripple 0.5s linear;
+}
+.link:hover {
+    transform:scale(1.06) translateY(-1px);
+    box-shadow:0 0 18px var(--glow);
+    background:rgba(0,255,255,0.2);
+}
+.link:active {
+    transform:scale(0.94);
+}
+.link span.icon { font-size:11px; animation:pulseGlow 3s infinite; }
 
-.profile{
-background:rgba(255,255,255,.05);
-border-radius:16px;
-padding:16px;
-margin-bottom:22px;
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(6px);
-opacity:0;
-transform:translateY(20px);
-animation:profileFade 0.6s forwards;
+/* COLAB mini */
+.collab {
+    background:var(--card);
+    border:1px solid rgba(0,255,255,0.5);
+    border-radius:7px;
+    padding:5px;
+    margin:8px 0 4px;
+    text-align:center;
+}
+.collab-avatar {
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    border:1.2px solid var(--accent);
+    box-shadow:0 0 8px var(--glow);
 }
 
-@keyframes profileFade{
-0%{opacity:0; transform:translateY(20px);}
-100%{opacity:1; transform:translateY(0);}
+/* NUEVAS COSITAS ABAJO */
+.benefits {
+    margin:12px 0 8px;
+    text-align:center;
+}
+.benefit-item {
+    font-size:9px;
+    margin:4px 0;
+    opacity:0.9;
+    animation:pulseGlow 4s infinite;
+}
+.benefit-item span { font-size:10px; margin-right:4px; }
+
+.testimonio-mini {
+    background:var(--card);
+    border:1px solid rgba(0,255,255,0.4);
+    border-radius:6px;
+    padding:6px;
+    margin:10px 0;
+    font-size:9px;
+    text-align:center;
+    opacity:0.85;
+    animation:flicker 6s infinite;
 }
 
-.avatar{
-width:65px;
-height:65px;
-border-radius:50%;
-border:2px solid #1d9bf0;
-box-shadow:0 0 20px #1d9bf0;
-animation:aura 3s infinite;
+.cta-final {
+    @extend .neon-border;
+    background:rgba(0,255,255,0.12);
+    border-radius:8px;
+    padding:8px;
+    margin:12px 0 20px;
+    text-align:center;
+    font-size:11px;
+    font-weight:600;
+    box-shadow:0 0 12px var(--glow);
+    animation:pulseGlow 3s infinite;
 }
 
-@keyframes aura{
-0%{box-shadow:0 0 10px #1d9bf0;}
-50%{box-shadow:0 0 25px #1d9bf0;}
-100%{box-shadow:0 0 10px #1d9bf0;}
+.footer {
+    text-align:center;
+    font-size:8px;
+    opacity:0.6;
+    margin:20px 0 60px;
+    padding-bottom:40px;
 }
 
-.badges{
-font-size:10px;
-margin-top:8px;
-line-height:1.5;
-opacity:.8;
+/* FLOATS mini */
+.whatsapp-float, .copy-float {
+    position:fixed;
+    bottom:50px;
+    right:10px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    box-shadow:0 2px 8px rgba(0,0,0,0.6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:white;
+    z-index:1000;
+    transition:0.18s;
 }
+.whatsapp-float { background:#25D366; bottom:95px; }
+.copy-float { background:#5865F2; bottom:50px; font-size:16px; }
+.whatsapp-float:hover, .copy-float:hover { transform:scale(1.18); }
 
-/* BOTONES */
-
-.link{
-display:block;
-padding:10px;
-margin:9px 0;
-border-radius:10px;
-background:transparent;
-border:1px solid rgba(255,255,255,.1);
-text-decoration:none;
-color:white;
-font-size:12px;
-transition:.3s;
-position:relative;
-overflow:hidden;
-
-opacity:0;
-transform:translateY(15px);
-animation:buttonFade 0.5s forwards;
-}
-
-@keyframes buttonFade{
-0%{opacity:0; transform:translateY(15px);}
-100%{opacity:1; transform:translateY(0);}
-}
-
-.link:hover{
-transform:translateY(-3px) scale(1.03);
-box-shadow:0 0 18px rgba(29,155,240,.8);
-border:1px solid #1d9bf0;
-}
-
-.link::before{
-content:"";
-position:absolute;
-top:0;
-left:-100%;
-width:100%;
-height:100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,.4),transparent);
-transition:.6s;
-}
-
-.link:hover::before{
-left:100%;
-}
-
-/* BOTON SIGUIENTE */
-
-.link.next{
-border:1px solid #1d9bf0;
-box-shadow:0 0 10px rgba(29,155,240,.6);
-margin-top:25px; /* espacio extra para separar */
-position:relative;
-}
-
-.link.next::after{
-content:"➤";
-position:absolute;
-right:10px;
-animation:arrowMove 1s infinite;
-}
-
-@keyframes arrowMove{
-0%{transform:translateX(0);}
-50%{transform:translateX(5px);}
-100%{transform:translateX(0);}
-}
-
-/* SEPARADOR */
-
-.sep{
-margin:32px 0 12px;
-font-size:10px;
-letter-spacing:2px;
-opacity:.6;
-}
-
-/* FOOTER */
-
-.footer{
-margin-top:10px;
-font-size:9px;
-opacity:.5;
-}
-
-/* FONDO ANIMADO */
-
-canvas{
-position:fixed;
-top:0;
-left:0;
-z-index:-1;
-}
-
+/* CANVAS + lluvia y partículas mini */
+canvas { position:fixed; top:0; left:0; z-index:-1; }
 </style>
 </head>
-
 <body>
 
 <canvas id="bg"></canvas>
 
-<div class="header">
-SAMIRXX NETWORK
-</div>
+<div class="header">SAMIRXX</div>
 
-<div class="status">
-SERVICIOS ONLINE
-</div>
+<div class="status">ONLINE</div>
 
 <div class="container">
 
-<div class="profile" style="animation-delay:0s;">
-<img src="images/20260316210408.png" class="avatar">
+    <div class="profile">
+        <img src="https://thumbs.dreamstime.com/b/hacker-neon-mask-binary-code-background-hooded-figure-blue-featuring-creepy-smile-eyes-stands-against-backdrop-419140077.jpg" alt="Mask" class="avatar">
+        <div class="badges">✔26 ✔Ráp ✔24/7</div>
+    </div>
 
-<div class="badges">
-✔ Servicio verificado<br>
-✔ Entrega inmediata<br>
-✔ Soporte 24/7
+    <div class="oferta">⚡20% OFF HOY⚡</div>
+
+    <div class="update">Update: Hoy 🔥</div>
+
+    <a class="link" href="https://wa.me/526151160719?text=Proxy%20YA" style="animation-delay:0.04s;">
+        <span class="icon">📡</span> Proxy
+    </a>
+    <a class="link" href="https://wa.me/526151160719?text=Aim%20Drag" style="animation-delay:0.08s;">
+        <span class="icon">🎯</span> Aim Drag
+    </a>
+    <a class="link" href="https://wa.me/526151160719?text=Aim%20Body" style="animation-delay:0.12s;">
+        <span class="icon">🎯</span> Aim Body
+    </a>
+    <a class="link" href="https://www.mediafire.com/file/jkr4mo3jfvbjpl3/FREEFIRE_1.120.X_1770696911.ipa/file" style="animation-delay:0.16s;">
+        <span class="icon">📥</span> IPA
+    </a>
+
+    <div style="margin:6px 0 3px; text-align:center; font-size:9px; opacity:0.7;">COLAB</div>
+
+    <div class="collab">
+        <img src="images/20260316210415.png" alt="@47Renovado" class="collab-avatar">
+        <div style="font-size:9px;">@47Renovado</div>
+    </div>
+
+    <a class="link" href="https://wa.me/573025434258?text=Aimbot" style="animation-delay:0.2s;">
+        <span class="icon">🎯</span> Aimbot
+    </a>
+    <a class="link" href="https://wa.me/573025434258?text=Holograma" style="animation-delay:0.24s;">
+        <span class="icon">✨</span> Holo
+    </a>
+
+    <a class="link next" href="next.html">→</a>
+
+    <!-- COSITAS ABAJO -->
+    <div class="benefits neon-border">
+        <div class="benefit-item"><span>⚡</span> < 5 min entrega</div>
+        <div class="benefit-item"><span>🔒</span> Seguro 100%</div>
+        <div class="benefit-item"><span>🆘</span> Soporte 24/7</div>
+    </div>
+
+    <div class="cta-final neon-border">
+        ¡DM YA o pierdes el descuento! ⚡
+    </div>
+
+    <div class="footer">
+        © 2026 Samirxx Network • Tijuana MX
+    </div>
+
 </div>
-</div>
 
-<a class="link" style="animation-delay:0.2s;" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Proxy%20FF">Proxy iPhone</a>
-
-<a class="link" style="animation-delay:0.4s;" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Aim%20Drag">Aim Drag</a>
-
-<a class="link" style="animation-delay:0.6s;" href="https://wa.me/526151160719?text=Deseo%20adquirir%20tu%20producto%20Aim%20Body">Aim Body</a>
-
-<a class="link" style="animation-delay:0.8s;" href="https://www.mediafire.com/file/jkr4mo3jfvbjpl3/FREEFIRE_1.120.X_1770696911.ipa/file">IPA Gratis</a>
-
-<!-- BOTÓN ESING IOS actualizado con tu enlace correcto -->
-<a class="link" style="animation-delay:1s;" href="https://esign-ios.com" target="_blank">ESING IOS</a>
-
-<div class="sep">COLABORADOR</div>
-
-<div class="profile" style="animation-delay:1.2s;">
-<img src="images/20260316210415.png" class="avatar" style="width:50px;height:50px;">
-<div style="margin-top:6px;font-size:13px">@47Renovado</div>
-</div>
-
-<a class="link" style="animation-delay:1.4s;" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Aimbot%20Cuello">Aimbot Cuello</a>
-
-<a class="link" style="animation-delay:1.6s;" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Holograma">Holograma</a>
-
-<a class="link" style="animation-delay:1.8s;" href="https://wa.me/573025434258?text=Deseo%20adquirir%20tu%20producto%20Balas%20Magicas">Balas Mágicas</a>
-
-<a class="link next" style="animation-delay:2s;" href="next.html">Siguiente →</a>
-
-<div class="footer">
-© 2026 Samirxx
-</div>
-
-</div>
+<a href="https://wa.me/526151160719?text=Hola" class="whatsapp-float">💬</a>
+<a href="#" onclick="navigator.clipboard.writeText('+526151160719'); alert('Copiado 📋'); return false;" class="copy-float">📋</a>
 
 <script>
+// Canvas ultra ligero + lluvia digital
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-/* FONDO LINEAS AZULES */
-
-const canvas=document.getElementById("bg");
-const ctx=canvas.getContext("2d");
-
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let lines=[];
-
-for(let i=0;i<40;i++){
-lines.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-speed:Math.random()*1+0.5,
-length:Math.random()*120+40
-})
+let rainDrops = [];
+for(let i = 0; i < 30; i++){
+    rainDrops.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*-canvas.height,
+        length: Math.random()*12 + 6,
+        speed: Math.random()*2.5 + 1,
+        opacity: Math.random()*0.2 + 0.04
+    });
 }
 
 function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+    rainDrops.forEach(r => {
+        ctx.strokeStyle = `rgba(0,255,255,${r.opacity})`;
+        ctx.lineWidth = 0.7;
+        ctx.beginPath();
+        ctx.moveTo(r.x, r.y);
+        ctx.lineTo(r.x, r.y + r.length);
+        ctx.stroke();
 
-lines.forEach(l=>{
+        r.y += r.speed;
+        if(r.y > canvas.height) {
+            r.y = -r.length;
+            r.x = Math.random()*canvas.width;
+        }
+    });
 
-ctx.beginPath();
-ctx.moveTo(l.x,l.y);
-ctx.lineTo(l.x+l.length,l.y+l.length);
-
-ctx.strokeStyle="rgba(29,155,240,0.2)";
-ctx.lineWidth=1.5;
-ctx.stroke();
-
-l.x+=l.speed;
-l.y+=l.speed;
-
-if(l.x>canvas.width||l.y>canvas.height){
-l.x=Math.random()*canvas.width;
-l.y=0;
+    requestAnimationFrame(animate);
 }
-
-});
-
-requestAnimationFrame(animate);
-
-}
-
 animate();
 
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+// Vibración mini
+document.querySelectorAll('.link').forEach(link => {
+    link.addEventListener('touchstart', () => {
+        if(navigator.vibrate) navigator.vibrate(20);
+    });
+});
 </script>
 
 </body>
