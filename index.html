@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -181,8 +180,9 @@ color:#777;
 
 <div class="container">
 
-<!-- 🔥 TU IMAGEN -->
-<img src="foto.jpg" class="avatar">
+<!-- 🔥 IMAGEN CORREGIDA -->
+<img src="img/20260322231831.JPG" class="avatar">
+
 <div class="name">Samirxx</div>
 
 <div class="subtitle">
@@ -231,8 +231,6 @@ Mods y configuraciones premium para mejorar tu rendimiento 🎯
 
 <div class="card">
 <p>📩 ¿No ves tu dispositivo? Te ayudo directamente</p>
-<p>🛠️ Compatible con iPhone y Android</p>
-<p>⚡ Atención rápida por WhatsApp</p>
 </div>
 
 <div class="footer">© 2026 Samirxx Store</div>
@@ -242,6 +240,7 @@ Mods y configuraciones premium para mejorar tu rendimiento 🎯
 <a href="https://wa.me/526151160719" class="floating">💬</a>
 
 <script>
+// partículas
 const canvas=document.getElementById("canvas");
 const ctx=canvas.getContext("2d");
 
@@ -276,10 +275,11 @@ requestAnimationFrame(animate);
 }
 animate();
 
+// botones
 document.querySelectorAll(".device").forEach(btn=>{
 btn.onclick=()=>{
 let dispositivo = btn.innerText;
-let msg = "Hola, quiero adquirir una modificación para mi teléfono " + dispositivo;
+let msg = "Hola, quiero para " + dispositivo;
 let url = "https://wa.me/526151160719?text=" + encodeURIComponent(msg);
 window.location.href = url;
 };
@@ -290,6 +290,7 @@ let msg="Hola quiero "+product;
 window.location.href="https://wa.me/526151160719?text="+encodeURIComponent(msg);
 }
 
+// animaciones
 const observer=new IntersectionObserver(entries=>{
 entries.forEach(entry=>{
 if(entry.isIntersecting){
