@@ -1,369 +1,496 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Samirxx Store</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
+<title>La app de mi historia</title>
 <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ===== RESET ===== */
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: 'Inter', sans-serif;
-  color: white;
-  overflow-x: hidden;
+body {
+  min-height: 100vh;
   background: #000;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow: hidden;
 }
 
-/* ===== FONDO ===== */
-body::before {
-  content: "";
+#boot {
   position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(-45deg,#000,#0a0a0a,#111,#000);
-  background-size: 400% 400%;
-  animation: bgMove 15s ease infinite;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.8s ease;
 }
 
-/* ===== CANVAS ===== */
+.apple-logo {
+  width: 65px;
+  opacity: 0;
+  transform: scale(0.85);
+  animation: boot 2.2s ease forwards;
+}
+
+@keyframes boot {
+  0%   { opacity: 0; transform: scale(0.85); }
+  40%  { opacity: 1; transform: scale(1.05); }
+  60%  { transform: scale(1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.bar {
+  width: 180px;
+  height: 2px;
+  background: #1a1a1a;
+  margin: 25px auto 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -60%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0%   { left: -60%; }
+  100% { left: 120%; }
+}
+
+#app {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
 canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
 }
 
-/* ===== CONTENEDOR ===== */
-.container{
-  position: relative;
+.glow {
+  position: fixed;
+  top: 30%; left: 50%;
+  transform: translateX(-50%);
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
   z-index: 1;
-  max-width: 600px;
-  margin: auto;
-  padding: 25px;
-  text-align: center;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.avatar-wrap { position: relative; margin-bottom: 15px; }
+
+.avatar {
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar svg { width: 55px; height: 55px; }
+
+.wifi-badge {
+  position: absolute;
+  bottom: 2px; right: 2px;
+  width: 26px; height: 26px;
+  background: #1db954;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #0a0a0a;
+}
+
+.wifi-badge svg { width: 14px; height: 14px; fill: white; }
+
+.title {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.verified { width: 22px; height: 22px; }
+
+.subtitle {
+  color: #666;
+  font-size: 11px;
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.badges { display: flex; gap: 8px; margin-bottom: 24px; }
+
+.badge {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 5px 12px;
+  color: #aaa;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.badge svg { width: 12px; height: 12px; fill: #4ade80; }
+
+.card {
+  background: rgba(20,20,20,0.85);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 24px 20px;
+  width: 100%;
+  max-width: 360px;
   backdrop-filter: blur(20px);
 }
 
-/* ===== AVATAR ===== */
-.avatar{
-  width: 180px;
-  border-radius: 50%;
-}
-
-.neonAvatar{
-  animation: avatarPulse 2s infinite alternate;
-  margin-bottom: 20px;
-}
-
-@keyframes avatarPulse{
-  0%{
-    box-shadow:0 0 20px #ff0000, 0 0 40px #ff0000;
-    transform: scale(1);
-  }
-  100%{
-    box-shadow:0 0 60px #ff0000, 0 0 120px #ff2a2a;
-    transform: scale(1.08);
-  }
-}
-
-/* ===== TEXTO ===== */
-.name{
-  font-size: 34px;
-  margin-top: 10px;
-}
-
-.subtitle{
-  color: #aaa;
-  font-size: 17px;
-  margin-top: 10px;
-}
-
-/* ===== STATUS ===== */
-.status{
-  color:#00ff88;
-  font-size: 16px;
-  margin-top: 12px;
+.card-header {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.card-header svg {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 8px;
+  fill: white;
+}
+
+.card-header-text h3 { color: white; font-size: 15px; font-weight: 600; }
+.card-header-text p { color: #555; font-size: 12px; }
+
+.input-group { margin-bottom: 16px; }
+
+.input-label {
+  color: #555;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.input-wrap {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
   gap: 10px;
 }
 
-.dot{
-  width:12px;
-  height:12px;
-  background:#00ff88;
-  border-radius:50%;
-  animation: statusPulse 1.2s infinite;
-  box-shadow:0 0 10px #00ff88;
+.input-wrap svg { width: 18px; height: 18px; fill: #555; flex-shrink: 0; }
+
+.input-wrap input {
+  background: none;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 15px;
+  width: 100%;
+  font-family: inherit;
 }
 
-@keyframes statusPulse{
-  0%{transform:scale(1);opacity:1;}
-  50%{transform:scale(1.6);opacity:0.5;}
-  100%{transform:scale(1);opacity:1;}
+.input-wrap input::placeholder { color: #444; }
+.input-wrap.error { border-color: #ff4444; }
+
+.btn-connect {
+  width: 100%; padding: 16px;
+  border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
+  color: #000; font-size: 16px; font-weight: 600;
+  cursor: pointer; margin-bottom: 10px;
+  font-family: inherit;
+  transition: opacity 0.2s;
 }
 
-/* ===== CARDS ===== */
-.card{
-  background: rgba(0,0,0,0.5);
-  border-radius: 18px;
-  padding: 18px;
-  margin: 14px 0;
-  backdrop-filter: blur(12px);
-  transform: translateY(60px) scale(0.95);
-  opacity: 0;
-  transition: 0.8s;
-  font-size: 16px;
+.btn-connect:disabled { opacity: 0.5; }
+
+.btn-buy {
+  width: 100%; padding: 16px;
+  border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #f7971e, #fd5ca0);
+  color: white; font-size: 14px; font-weight: 700;
+  letter-spacing: 1px; cursor: pointer;
+  display: flex; align-items: center;
+  justify-content: center; gap: 8px;
+  font-family: inherit;
 }
 
-.card.show{
-  opacity:1;
-  transform: translateY(0) scale(1);
+.btn-buy svg { width: 16px; height: 16px; fill: white; }
+
+.error-msg {
+  color: #ff4444;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 10px;
+  display: none;
 }
 
-.card:hover{
-  transform: scale(1.05);
-  box-shadow:0 0 20px #ff4444, 0 0 40px rgba(255,70,70,0.3);
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #333;
+  font-size: 10px;
+  line-height: 1.6;
+  z-index: 2;
+  position: relative;
 }
-
-/* ===== BOTONES ===== */
-.buy{
-  margin-top: 14px;
-  padding: 14px;
-  font-size: 17px;
-  border-radius: 14px;
-  background: linear-gradient(120deg,#ff2a2a,#ff5555);
-  cursor: pointer;
-  animation: glowPulse 2s infinite;
-}
-
-@keyframes glowPulse{
-  0%{box-shadow:0 0 5px #ff4444;}
-  50%{box-shadow:0 0 20px #ff4444;}
-  100%{box-shadow:0 0 5px #ff4444;}
-}
-
-/* ===== DISPOSITIVOS ===== */
-.devices{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 18px;
-}
-
-.device{
-  padding: 14px;
-  font-size: 16px;
-  border-radius: 14px;
-  background:#111;
-  cursor:pointer;
-  transition: 0.3s;
-}
-
-.device.active{
-  background:#ff2a2a;
-  box-shadow:0 0 20px #ff4444;
-}
-
-.device:hover{
-  transform: scale(1.08);
-  box-shadow:0 0 20px #ff4444;
-}
-
-/* ===== BOTON FLOTANTE ===== */
-.floating{
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #ff2a2a;
-  padding: 18px;
-  font-size: 18px;
-  border-radius: 50%;
-  box-shadow: 0 0 20px #ff4444;
-}
-
-/* ===== FOOTER ===== */
-.footer{
-  margin-top: 25px;
-  font-size: 14px;
-  color:#777;
-}
-
-/* ===== FONDO ===== */
-@keyframes bgMove{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-
 </style>
 </head>
-
 <body>
 
-<canvas id="canvas"></canvas>
-
-<div class="container">
-
-<img src="https://i.pinimg.com/originals/cd/95/f4/cd95f4d01d6b2631a4afd60599f227b7.jpg" class="avatar neonAvatar">
-
-<div class="name">Samirxx</div>
-
-<div class="subtitle">
-Mods y configuraciones premium para mejorar tu rendimiento 🎯
+<div id="boot">
+  <svg class="apple-logo" viewBox="0 0 384 512" fill="white">
+    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+  </svg>
+  <div class="bar">
+    <div class="progress" id="progress"></div>
+  </div>
 </div>
 
-<div class="status">
-<span class="dot"></span> Servicio disponible
+<div id="app">
+  <canvas id="bg"></canvas>
+  <div class="glow"></div>
+  <div class="content">
+    <div class="avatar-wrap">
+      <div class="avatar">
+        <svg viewBox="0 0 342 342" fill="none">
+          <path d="M171 50 L230 160 L280 120 L260 220 L171 260 L82 220 L62 120 L112 160 Z" fill="#cc0000"/>
+          <line x1="60" y1="200" x2="282" y2="200" stroke="#cc0000" stroke-width="6"/>
+        </svg>
+      </div>
+      <div class="wifi-badge">
+        <svg viewBox="0 0 24 24"><path d="M1.5 8.5a13 13 0 0121 0M5 12a10 10 0 0114 0M8.5 15.5a6 6 0 017 0M12 19h.01"/></svg>
+      </div>
+    </div>
+
+    <div class="title">
+      La app de mi historia
+      <svg class="verified" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" fill="#1d9bf0"/>
+        <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="subtitle">SECURE GATEWAY V2.4</div>
+
+    <div class="badges">
+      <div class="badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6z"/></svg>
+        AES-256
+      </div>
+      <div class="badge">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 015 5v3H7V7a5 5 0 015-5zm-7 9h14v10H5z"/></svg>
+        TLS 1.3
+      </div>
+      <div class="badge">
+        <svg viewBox="0 0 24 24"><path d="M12 1C8 1 5 4 5 8v1H3v14h18V9h-2V8c0-4-3-7-7-7zm0 2c2.8 0 5 2.2 5 5v1H7V8c0-2.8 2.2-5 5-5z"/></svg>
+        Auth
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6z"/></svg>
+        <div class="card-header-text">
+          <h3>Acceso Seguro</h3>
+          <p>Ingresa tus credenciales</p>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">NOMBRE DE USUARIO</div>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
+          <input type="text" id="username" placeholder="Tu nombre">
+        </div>
+      </div>
+
+      <div class="input-group">
+        <div class="input-label">KEY DE ACCESO</div>
+        <div class="input-wrap" id="keyWrap">
+          <svg viewBox="0 0 24 24"><path d="M12.65 10A6 6 0 1010 12.65L20 22.65l2-2-1.5-1.5L22 17.65l-1.5-1.5 1.5-1.5-2.35-2.35L10 22.65A6 6 0 0012.65 10zM7 11a2 2 0 110-4 2 2 0 010 4z"/></svg>
+          <input type="password" id="keyInput" placeholder="Ingresa tu key">
+        </div>
+      </div>
+
+      <div class="error-msg" id="errorMsg">❌ Key incorrecta o expirada</div>
+
+      <button class="btn-connect" id="btnConnect" onclick="conectar()">Conectar</button>
+      <button class="btn-buy">
+        <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-9.8-4h11.4l1.4-7H5.2L4.3 3H1v2h2l3.6 8.6L5.2 16H19v-2H6.9l.3-2z"/></svg>
+        COMPRAR KEY
+      </button>
+    </div>
+
+    <div class="footer">
+      Secure Proxy Configuration System — Encrypted Connection<br>
+      All sessions are monitored and protected
+    </div>
+  </div>
 </div>
-
-<div class="card">
-<p>⭐ 100% legal compra ya ✅</p>
-<p>⚡ Servicio rápido y seguro</p>
-</div>
-
-<div class="card">
-<h3>👹Archivo👹</h3>
-<div>$10 USD</div>
-<p>Mejoras en tu jugabilidad</p>
-<div class="buy" onclick="buyArchivo()">Comprar</div>
-</div>
-
-<div class="card">
-<h3>Modifax</h3>
-<div>$5 USD</div>
-<p>Mejor rendimiento y ajustes</p>
-<div class="buy" onclick="buy('Modifax')">Comprar</div>
-</div>
-
-<div class="card">
-<p>1️⃣ Elige tu producto</p>
-<p>2️⃣ Selecciona tu dispositivo</p>
-<p>3️⃣ Te atiendo por WhatsApp</p>
-</div>
-
-<h3>Selecciona tu dispositivo 📱</h3>
-
-<div class="devices">
-<div class="device">iPhone</div>
-<div class="device">Samsung</div>
-<div class="device">Xiaomi</div>
-<div class="device">Huawei</div>
-<div class="device">Motorola</div>
-<div class="device">Alcatel</div>
-</div>
-
-<div class="card">
-<p>📩 ¿No ves tu dispositivo? Te ayudo directamente</p>
-</div>
-
-<div class="footer">©️ 2026 Samirxx Store</div>
-
-</div>
-
-<a href="https://wa.me/526151160719" class="floating">💬</a>
 
 <script>
-// ===== PARTICULAS =====
-const canvas=document.getElementById("canvas");
-const ctx=canvas.getContext("2d");
+const SUPABASE_URL = "https://ljqxqxfspzbjecbjiyza.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqcXhxeGZzcHpiamVjYmppeXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTU1NDQsImV4cCI6MjA5MzA3MTU0NH0.IyiBIvBrbAVTbrxYjKh1Nu28gn_Nx5q7KKQIawM7t0M";
+const REDIRECT_URL = "https://google.com"; // Cambia esto cuando decidas la página
 
-function resize(){
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-}
-resize();
-addEventListener("resize",resize);
+let progress = 0;
+let bar = document.getElementById("progress");
+let boot = document.getElementById("boot");
+let app = document.getElementById("app");
 
-let particles=[];
-for(let i=0;i<70;i++){
-particles.push({
-x:Math.random()*canvas.width,
-y:Math.random()*canvas.height,
-dx:(Math.random()-0.5),
-dy:(Math.random()-0.5)
-});
-}
-
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-particles.forEach(p=>{
-p.x+=p.dx;
-p.y+=p.dy;
-ctx.beginPath();
-ctx.arc(p.x,p.y,2,0,Math.PI*2);
-ctx.fillStyle="#ff4444";
-ctx.fill();
-});
-requestAnimationFrame(animate);
-}
-animate();
-
-// ===== LOGICA WHATSAPP =====
-let selectedProduct = "";
-let selectedDevice = "";
-
-function buyArchivo(){
-selectedProduct = "👹Archivo👹 ($10)";
-sendToWhatsApp();
+function updateProgress() {
+  let speed = progress < 60 ? 2.5 : progress < 85 ? 1 : 0.4;
+  progress += speed;
+  bar.style.width = progress + "%";
+  if (progress < 100) {
+    requestAnimationFrame(updateProgress);
+  } else {
+    boot.style.opacity = 0;
+    setTimeout(() => {
+      boot.style.display = "none";
+      app.style.display = "flex";
+      setTimeout(() => { app.style.opacity = 1; startBg(); }, 50);
+    }, 800);
+  }
 }
 
-function buy(product){
-selectedProduct = product;
-sendToWhatsApp();
+setTimeout(updateProgress, 500);
+
+async function conectar() {
+  const key = document.getElementById("keyInput").value.trim();
+  const btn = document.getElementById("btnConnect");
+  const errorMsg = document.getElementById("errorMsg");
+  const keyWrap = document.getElementById("keyWrap");
+
+  if (!key) return;
+
+  btn.disabled = true;
+  btn.textContent = "Verificando...";
+  errorMsg.style.display = "none";
+  keyWrap.classList.remove("error");
+
+  try {
+    const now = new Date().toISOString();
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/keys?key=eq.${encodeURIComponent(key)}&expires_at=gt.${now}&select=key`,
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": `Bearer ${SUPABASE_KEY}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.length > 0) {
+      btn.textContent = "✓ Acceso concedido";
+      btn.style.background = "linear-gradient(135deg, #4ade80, #22c55e)";
+      setTimeout(() => { window.location.href = REDIRECT_URL; }, 800);
+    } else {
+      keyWrap.classList.add("error");
+      errorMsg.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Conectar";
+    }
+  } catch (e) {
+    errorMsg.textContent = "❌ Error de conexión";
+    errorMsg.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "Conectar";
+  }
 }
 
-document.querySelectorAll(".device").forEach(btn=>{
-btn.onclick=()=>{
-document.querySelectorAll(".device").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
+function startBg() {
+  const canvas = document.getElementById("bg");
+  const ctx = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 
-selectedDevice = btn.innerText;
-sendToWhatsApp();
-};
-});
+  let particles = [];
+  for (let i = 0; i < 80; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.4,
+      dy: (Math.random() - 0.5) * 0.4,
+      alpha: Math.random() * 0.5 + 0.1
+    });
+  }
 
-function sendToWhatsApp(){
+  function drawBg() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let grad = ctx.createRadialGradient(canvas.width/2, canvas.height*0.35, 0, canvas.width/2, canvas.height*0.35, 300);
+    grad.addColorStop(0, "rgba(40,40,40,1)");
+    grad.addColorStop(1, "rgba(5,5,5,1)");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-if(!selectedProduct){
-alert("Selecciona primero un producto");
-return;
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    });
+
+    requestAnimationFrame(drawBg);
+  }
+
+  drawBg();
 }
-
-let msg = "Hola, quiero comprar:\n\n";
-msg += "🛒 Producto: " + selectedProduct + "\n";
-
-if(selectedDevice){
-msg += "📱 Dispositivo: " + selectedDevice + "\n";
-}
-
-msg += "\nQuedo atento 👍";
-
-window.location.href="https://wa.me/526151160719?text="+encodeURIComponent(msg);
-}
-
-// ===== ANIMACIONES =====
-const observer=new IntersectionObserver(entries=>{
-entries.forEach(entry=>{
-if(entry.isIntersecting){
-entry.target.classList.add("show");
-}
-});
-},{threshold:0.2});
-
-document.querySelectorAll(".card").forEach(card=>{
-observer.observe(card);
-});
 </script>
 
 </body>
