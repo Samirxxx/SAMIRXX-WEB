@@ -4,13 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La app de mi historia</title>
+<!-- Librería de Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+:root {
+  --bg-primary: #000;
+  --bg-card: rgba(20,20,20,0.85);
+  --text-primary: #fff;
+  --text-secondary: #666;
+  --accent: #1d9bf0;
+  --success: #4ade80;
+  --error: #ff4444;
+  --border-subtle: rgba(255,255,255,0.08);
+}
+
 body {
   min-height: 100vh;
-  background: #000;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   overflow: hidden;
 }
 
@@ -43,18 +56,20 @@ body {
 
 .bar {
   width: 180px;
-  height: 2px;
+  height: 3px;
   background: #1a1a1a;
   margin: 25px auto 0;
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
 }
 
 .progress {
   height: 100%;
   width: 0%;
-  background: #fff;
+  background: linear-gradient(90deg, #fff, #e0e0e0);
   border-radius: 10px;
+  transition: width 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -84,6 +99,7 @@ body {
   overflow-y: auto;
   opacity: 0;
   transition: opacity 0.8s ease;
+  padding: 20px 0;
 }
 
 canvas {
@@ -97,10 +113,16 @@ canvas {
   position: fixed;
   top: 30%; left: 50%;
   transform: translateX(-50%);
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(29,155,240,0.05) 0%, transparent 70%);
   z-index: 1;
   pointer-events: none;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+  50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
 }
 
 .content {
@@ -118,11 +140,17 @@ canvas {
 .avatar {
   width: 90px; height: 90px;
   border-radius: 50%;
-  background: #111;
-  border: 2px solid #222;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 2px solid rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 0 30px rgba(29,155,240,0.1);
+  transition: transform 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 .avatar svg { width: 55px; height: 55px; }
@@ -130,157 +158,318 @@ canvas {
 .wifi-badge {
   position: absolute;
   bottom: 2px; right: 2px;
-  width: 26px; height: 26px;
-  background: #1db954;
+  width: 28px; height: 28px;
+  background: var(--success);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #0a0a0a;
+  box-shadow: 0 0 15px rgba(77,222,128,0.5);
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% { box-shadow: 0 0 15px rgba(77,222,128,0.5); }
+  50% { box-shadow: 0 0 25px rgba(77,222,128,0.8); }
 }
 
 .wifi-badge svg { width: 14px; height: 14px; fill: white; }
 
 .title {
-  color: white;
+  color: var(--text-primary);
   font-size: 20px;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 6px;
   margin-bottom: 4px;
+  letter-spacing: -0.3px;
 }
 
-.verified { width: 22px; height: 22px; }
+.verified { 
+  width: 22px; 
+  height: 22px;
+  filter: drop-shadow(0 0 5px rgba(29,155,240,0.5));
+}
 
 .subtitle {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 11px;
   letter-spacing: 3px;
   margin-bottom: 16px;
+  text-transform: uppercase;
 }
 
-.badges { display: flex; gap: 8px; margin-bottom: 24px; }
+.badges { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
 
 .badge {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 20px;
-  padding: 5px 12px;
+  padding: 6px 14px;
   color: #aaa;
   font-size: 11px;
   display: flex;
   align-items: center;
   gap: 5px;
+  transition: all 0.3s ease;
+  cursor: default;
 }
 
-.badge svg { width: 12px; height: 12px; fill: #4ade80; }
+.badge:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+.badge svg { width: 12px; height: 12px; fill: var(--success); }
 
 .card {
-  background: rgba(20,20,20,0.85);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   border-radius: 20px;
-  padding: 24px 20px;
+  padding: 30px 24px;
   width: 100%;
-  max-width: 360px;
+  max-width: 380px;
   backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
 }
 
 .card-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 .card-header svg {
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 10px;
-  padding: 8px;
-  fill: white;
+  width: 40px; 
+  height: 40px;
+  background: rgba(29,155,240,0.1);
+  border-radius: 12px;
+  padding: 10px;
+  fill: var(--accent);
 }
 
-.card-header-text h3 { color: white; font-size: 15px; font-weight: 600; }
-.card-header-text p { color: #555; font-size: 12px; }
+.card-header-text h3 { 
+  color: var(--text-primary); 
+  font-size: 16px; 
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
 
-.input-group { margin-bottom: 16px; }
+.card-header-text p { 
+  color: #555; 
+  font-size: 12px; 
+  margin-top: 2px;
+}
+
+.input-group { margin-bottom: 20px; position: relative; }
 
 .input-label {
-  color: #555;
+  color: #777;
   font-size: 10px;
   letter-spacing: 2px;
   margin-bottom: 8px;
+  text-transform: uppercase;
+  font-weight: 600;
 }
 
 .input-wrap {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 12px;
   display: flex;
   align-items: center;
-  padding: 14px 16px;
+  padding: 0 16px;
   gap: 10px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.input-wrap svg { width: 18px; height: 18px; fill: #555; flex-shrink: 0; }
+.input-wrap:focus-within {
+  border-color: rgba(29,155,240,0.5);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 3px rgba(29,155,240,0.1);
+}
+
+.input-wrap.error {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(255,68,68,0.1);
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.input-wrap svg { 
+  width: 18px; 
+  height: 18px; 
+  fill: #555; 
+  flex-shrink: 0;
+  transition: fill 0.3s ease;
+}
+
+.input-wrap:focus-within svg {
+  fill: var(--accent);
+}
 
 .input-wrap input {
   background: none;
   border: none;
   outline: none;
-  color: white;
+  color: var(--text-primary);
   font-size: 15px;
   width: 100%;
+  padding: 14px 0;
   font-family: inherit;
+}
+
+.input-wrap .toggle-password {
+  background: none;
+  border: none;
+  color: #555;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  transition: color 0.3s;
+  font-size: 18px;
+}
+
+.input-wrap .toggle-password:hover {
+  color: #fff;
 }
 
 .input-wrap input::placeholder { color: #444; }
-.input-wrap.error { border-color: #ff4444; }
 
 .btn-connect {
-  width: 100%; padding: 16px;
-  border-radius: 14px; border: none;
+  width: 100%; 
+  padding: 16px;
+  border-radius: 14px; 
+  border: none;
   background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-  color: #000; font-size: 16px; font-weight: 600;
-  cursor: pointer; margin-bottom: 10px;
+  color: #000; 
+  font-size: 16px; 
+  font-weight: 600;
+  cursor: pointer; 
+  margin-bottom: 12px;
   font-family: inherit;
-  transition: opacity 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.btn-connect:disabled { opacity: 0.5; }
+.btn-connect:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255,255,255,0.2);
+}
+
+.btn-connect:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-connect:disabled { 
+  opacity: 0.5; 
+  cursor: not-allowed;
+}
+
+.btn-connect.success {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: white;
+}
 
 .btn-buy {
-  width: 100%; padding: 16px;
-  border-radius: 14px; border: none;
-  background: linear-gradient(135deg, #f7971e, #fd5ca0);
-  color: white; font-size: 14px; font-weight: 700;
-  letter-spacing: 1px; cursor: pointer;
-  display: flex; align-items: center;
-  justify-content: center; gap: 8px;
+  width: 100%; 
+  padding: 16px;
+  border-radius: 14px; 
+  border: none;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white; 
+  font-size: 14px; 
+  font-weight: 700;
+  letter-spacing: 1px; 
+  cursor: pointer;
+  display: flex; 
+  align-items: center;
+  justify-content: center; 
+  gap: 8px;
   font-family: inherit;
+  transition: all 0.3s ease;
 }
 
-.btn-buy svg { width: 16px; height: 16px; fill: white; }
+.btn-buy:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(37,211,102,0.3);
+}
+
+.btn-buy svg { width: 18px; height: 18px; fill: white; }
 
 .error-msg {
-  color: #ff4444;
+  color: var(--error);
   font-size: 12px;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 12px;
   display: none;
+  padding: 10px;
+  background: rgba(255,68,68,0.1);
+  border-radius: 8px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .footer {
-  margin-top: 20px;
+  margin-top: 24px;
   text-align: center;
   color: #333;
   font-size: 10px;
-  line-height: 1.6;
+  line-height: 1.8;
   z-index: 2;
   position: relative;
+  max-width: 380px;
+}
+
+.footer:hover {
+  color: #555;
+  transition: color 0.3s;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 24px 20px;
+    margin: 0 12px;
+  }
+  
+  .badge {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
 }
 </style>
 </head>
@@ -307,7 +496,7 @@ canvas {
         </svg>
       </div>
       <div class="wifi-badge">
-        <svg viewBox="0 0 24 24"><path d="M1.5 8.5a13 13 0 0121 0M5 12a10 10 0 0114 0M8.5 15.5a6 6 0 017 0M12 19h.01"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M1.5 8.5a13 13 0 0121 0M5 12a10 10 0 0114 0M8.5 15.5a6 6 0 017 0M12 19h.01" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
       </div>
     </div>
 
@@ -340,151 +529,296 @@ canvas {
         <svg viewBox="0 0 24 24"><path d="M12 2L4 6v6c0 5.5 3.8 10.7 8 12 4.2-1.3 8-6.5 8-12V6z"/></svg>
         <div class="card-header-text">
           <h3>Acceso Seguro</h3>
-          <p>Ingresa tus credenciales</p>
+          <p>Ingresa tus credenciales para continuar</p>
         </div>
       </div>
 
       <div class="input-group">
-        <div class="input-label">NOMBRE DE USUARIO</div>
-        <div class="input-wrap">
+        <div class="input-label">👤 NOMBRE DE USUARIO</div>
+        <div class="input-wrap" id="userWrap">
           <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v2h20v-2c0-3.3-6.7-5-10-5z"/></svg>
-          <input type="text" id="username" placeholder="Tu nombre">
+          <input type="text" id="username" placeholder="Tu nombre de usuario" autocomplete="username">
         </div>
+        <div class="error-msg" id="userError">⚠️ Ingresa tu nombre de usuario</div>
       </div>
 
       <div class="input-group">
-        <div class="input-label">KEY DE ACCESO</div>
+        <div class="input-label">🔑 KEY DE ACCESO</div>
         <div class="input-wrap" id="keyWrap">
           <svg viewBox="0 0 24 24"><path d="M12.65 10A6 6 0 1010 12.65L20 22.65l2-2-1.5-1.5L22 17.65l-1.5-1.5 1.5-1.5-2.35-2.35L10 22.65A6 6 0 0012.65 10zM7 11a2 2 0 110-4 2 2 0 010 4z"/></svg>
-          <input type="password" id="keyInput" placeholder="Ingresa tu key">
+          <input type="password" id="keyInput" placeholder="Ingresa tu key de acceso" autocomplete="current-password">
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">👁</button>
         </div>
+        <div class="error-msg" id="keyError">⚠️ Ingresa tu key de acceso</div>
       </div>
 
-      <div class="error-msg" id="errorMsg">❌ Key incorrecta o expirada</div>
+      <div class="error-msg" id="errorMsg">❌ Key inválida, expirada o sin usos disponibles</div>
+      <div class="error-msg" id="successMsg" style="color: #4ade80; background: rgba(77,222,128,0.1);">✅ ¡Acceso concedido! Redirigiendo...</div>
 
-      <button class="btn-connect" id="btnConnect" onclick="conectar()">Conectar</button>
-      <button class="btn-buy">
-        <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-9.8-4h11.4l1.4-7H5.2L4.3 3H1v2h2l3.6 8.6L5.2 16H19v-2H6.9l.3-2z"/></svg>
-        COMPRAR KEY
+      <button class="btn-connect" id="btnConnect" onclick="conectar()">
+        <span id="btnText">Conectar</span>
+      </button>
+      
+      <button class="btn-buy" onclick="window.location.href='https://wa.me/5216151160719?text=Hola%20quiero%20obtener%20una%20key%20de%20acceso'">
+        <svg viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+        OBTENER KEY POR WHATSAPP
       </button>
     </div>
 
     <div class="footer">
-      Secure Proxy Configuration System — Encrypted Connection<br>
-      All sessions are monitored and protected
+      🔒 Secure Proxy Configuration System — Encrypted Connection<br>
+      <span style="color: #555;">Todas las sesiones son monitoreadas y protegidas</span><br>
+      <span style="color: #444; font-size: 9px;">v2.4.1 • SSL/TLS 256-bit • © 2024</span>
     </div>
   </div>
 </div>
 
 <script>
+// ============ CONFIGURACIÓN ============
 const SUPABASE_URL = "https://ljqxqxfspzbjecbjiyza.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqcXhxeGZzcHpiamVjYmppeXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTU1NDQsImV4cCI6MjA5MzA3MTU0NH0.IyiBIvBrbAVTbrxYjKh1Nu28gn_Nx5q7KKQIawM7t0M";
-const REDIRECT_URL = "https://google.com"; // Cambia esto cuando decidas la página
+const REDIRECT_URL = "https://google.com"; // Cambia esto por tu URL final
 
+// ============ INICIALIZAR SUPABASE ============
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ============ PANTALLA DE CARGA ============
 let progress = 0;
 let bar = document.getElementById("progress");
 let boot = document.getElementById("boot");
 let app = document.getElementById("app");
 
+// Toggle contraseña
+document.getElementById('togglePassword').addEventListener('click', function() {
+  const keyInput = document.getElementById('keyInput');
+  const type = keyInput.getAttribute('type') === 'password' ? 'text' : 'password';
+  keyInput.setAttribute('type', type);
+  this.textContent = type === 'password' ? '👁' : '🙈';
+});
+
+// Enter para enviar
+document.getElementById('keyInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') conectar();
+});
+document.getElementById('username').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') document.getElementById('keyInput').focus();
+});
+
 function updateProgress() {
-  let speed = progress < 60 ? 2.5 : progress < 85 ? 1 : 0.4;
+  let speed = progress < 60 ? 2.5 : progress < 85 ? 1.2 : 0.5;
   progress += speed;
+  if (progress > 100) progress = 100;
   bar.style.width = progress + "%";
+  
   if (progress < 100) {
     requestAnimationFrame(updateProgress);
   } else {
-    boot.style.opacity = 0;
     setTimeout(() => {
-      boot.style.display = "none";
-      app.style.display = "flex";
-      setTimeout(() => { app.style.opacity = 1; startBg(); }, 50);
-    }, 800);
+      boot.style.opacity = 0;
+      setTimeout(() => {
+        boot.style.display = "none";
+        app.style.display = "flex";
+        setTimeout(() => { 
+          app.style.opacity = 1; 
+          startBg(); 
+        }, 50);
+      }, 800);
+    }, 200);
   }
 }
 
 setTimeout(updateProgress, 500);
 
+// ============ FUNCIONES AUXILIARES ============
+function showError(elementId, message) {
+  const el = document.getElementById(elementId);
+  el.textContent = message;
+  el.style.display = 'block';
+  setTimeout(() => {
+    el.style.display = 'none';
+  }, 5000);
+}
+
+function clearErrors() {
+  document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.input-wrap').forEach(el => el.classList.remove('error'));
+}
+
+// ============ CONECTAR CON SUPABASE ============
 async function conectar() {
+  const username = document.getElementById("username").value.trim();
   const key = document.getElementById("keyInput").value.trim();
   const btn = document.getElementById("btnConnect");
-  const errorMsg = document.getElementById("errorMsg");
+  const btnText = document.getElementById("btnText");
+  const userWrap = document.getElementById("userWrap");
   const keyWrap = document.getElementById("keyWrap");
 
-  if (!key) return;
+  clearErrors();
 
+  // Validar campos
+  if (!username) {
+    userWrap.classList.add("error");
+    showError('userError', '⚠️ Por favor ingresa tu nombre de usuario');
+    document.getElementById("username").focus();
+    return;
+  }
+
+  if (!key) {
+    keyWrap.classList.add("error");
+    showError('keyError', '⚠️ Por favor ingresa tu key de acceso');
+    document.getElementById("keyInput").focus();
+    return;
+  }
+
+  // Mostrar loading
   btn.disabled = true;
-  btn.textContent = "Verificando...";
-  errorMsg.style.display = "none";
-  keyWrap.classList.remove("error");
+  btnText.innerHTML = '<span class="loading-spinner"></span> Verificando...';
 
   try {
-    const now = new Date().toISOString();
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/keys?key=eq.${encodeURIComponent(key)}&expires_at=gt.${now}&select=key`,
-      {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": `Bearer ${SUPABASE_KEY}`
-        }
-      }
-    );
+    // Obtener IP del usuario
+    let userIP = 'desconocida';
+    try {
+      const ipRes = await fetch('https://api.ipify.org?format=json');
+      const ipData = await ipRes.json();
+      userIP = ipData.ip;
+    } catch(e) {
+      console.log('No se pudo obtener IP');
+    }
 
-    const data = await res.json();
+    // Llamar a la función RPC de Supabase
+    const { data, error } = await supabaseClient.rpc('consume_key', {
+      key_value: key,
+      username_param: username,
+      ip_param: userIP
+    });
 
-    if (data.length > 0) {
-      btn.textContent = "✓ Acceso concedido";
-      btn.style.background = "linear-gradient(135deg, #4ade80, #22c55e)";
-      setTimeout(() => { window.location.href = REDIRECT_URL; }, 800);
+    if (error) throw error;
+
+    if (data.success) {
+      // ÉXITO
+      btnText.innerHTML = '✓ Acceso concedido';
+      btn.classList.add('success');
+      
+      document.getElementById("successMsg").textContent = '✅ ¡Acceso concedido! Redirigiendo...';
+      document.getElementById("successMsg").style.display = "block";
+      
+      // Guardar sesión
+      sessionStorage.setItem('auth_user', username);
+      sessionStorage.setItem('auth_key', key);
+      
+      // Redirigir
+      setTimeout(() => {
+        window.location.href = REDIRECT_URL;
+      }, 1500);
+      
     } else {
+      // KEY INVÁLIDA
       keyWrap.classList.add("error");
-      errorMsg.style.display = "block";
+      const errorMsg = data.error || 'Key inválida, expirada o sin usos disponibles';
+      document.getElementById("errorMsg").textContent = '❌ ' + errorMsg;
+      document.getElementById("errorMsg").style.display = "block";
       btn.disabled = false;
-      btn.textContent = "Conectar";
+      btnText.textContent = "Conectar";
+      
+      // Animación de shake
+      btn.style.animation = "shake 0.5s ease";
+      setTimeout(() => btn.style.animation = "", 500);
     }
   } catch (e) {
-    errorMsg.textContent = "❌ Error de conexión";
-    errorMsg.style.display = "block";
+    console.error("Error:", e);
+    document.getElementById("errorMsg").textContent = "❌ Error de conexión. Intenta de nuevo.";
+    document.getElementById("errorMsg").style.display = "block";
     btn.disabled = false;
-    btn.textContent = "Conectar";
+    btnText.textContent = "Conectar";
   }
 }
 
+// ============ FONDO DE PARTÍCULAS ============
 function startBg() {
   const canvas = document.getElementById("bg");
   const ctx = canvas.getContext("2d");
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
 
   let particles = [];
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 100; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
       r: Math.random() * 2 + 0.5,
-      dx: (Math.random() - 0.5) * 0.4,
-      dy: (Math.random() - 0.5) * 0.4,
-      alpha: Math.random() * 0.5 + 0.1
+      dx: (Math.random() - 0.5) * 0.5,
+      dy: (Math.random() - 0.5) * 0.5,
+      alpha: Math.random() * 0.6 + 0.1,
+      originalAlpha: Math.random() * 0.6 + 0.1,
+      pulseSpeed: Math.random() * 0.02 + 0.01
     });
   }
 
+  let mouseX = canvas.width / 2;
+  let mouseY = canvas.height / 2;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+
   function drawBg() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    let grad = ctx.createRadialGradient(canvas.width/2, canvas.height*0.35, 0, canvas.width/2, canvas.height*0.35, 300);
-    grad.addColorStop(0, "rgba(40,40,40,1)");
-    grad.addColorStop(1, "rgba(5,5,5,1)");
+    
+    let grad = ctx.createRadialGradient(canvas.width/2, canvas.height*0.35, 0, canvas.width/2, canvas.height*0.35, 400);
+    grad.addColorStop(0, "rgba(30,30,40,1)");
+    grad.addColorStop(0.5, "rgba(15,15,20,1)");
+    grad.addColorStop(1, "rgba(5,5,8,1)");
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     particles.forEach(p => {
+      const dx = mouseX - p.x;
+      const dy = mouseY - p.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      
+      if (dist < 150) {
+        p.x -= dx * 0.002;
+        p.y -= dy * 0.002;
+      }
+
+      p.alpha = p.originalAlpha + Math.sin(Date.now() * p.pulseSpeed) * 0.2;
+      
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+      ctx.fillStyle = `rgba(255,255,255,${Math.max(0, Math.min(1, p.alpha))})`;
       ctx.fill();
+      
       p.x += p.dx;
       p.y += p.dy;
-      if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
-      if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      
+      if (p.x < -10) p.x = canvas.width + 10;
+      if (p.x > canvas.width + 10) p.x = -10;
+      if (p.y < -10) p.y = canvas.height + 10;
+      if (p.y > canvas.height + 10) p.y = -10;
     });
+
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(255,255,255,${0.05 * (1 - dist/100)})`;
+          ctx.stroke();
+        }
+      }
+    }
 
     requestAnimationFrame(drawBg);
   }
