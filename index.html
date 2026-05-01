@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La app de mi historia</title>
-<!-- Librería de Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,7 +66,7 @@ body {
 .progress {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #fff, #e0e0e0);
+  background: linear-gradient(90deg, #4ade80, #1d9bf0);
   border-radius: 10px;
   transition: width 0.3s ease;
   position: relative;
@@ -135,43 +134,137 @@ canvas {
   padding: 20px;
 }
 
-.avatar-wrap { position: relative; margin-bottom: 15px; }
+/* ============ LOGO ANIMADO ============ */
+.avatar-wrap { 
+  position: relative; 
+  margin-bottom: 15px;
+  width: 110px;
+  height: 110px;
+}
 
+/* Anillo exterior */
+.logo-ring-outer {
+  position: absolute;
+  top: -5px; left: -5px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: #4ade80;
+  border-right-color: #1d9bf0;
+  border-bottom-color: #4ade80;
+  border-left-color: #1d9bf0;
+  animation: spin 3s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(74,222,128,0.5));
+}
+
+/* Anillo interior */
+.logo-ring-inner {
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 106px; height: 106px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  border-top-color: #ffa500;
+  border-bottom-color: #ff4444;
+  animation: spin 2s linear infinite reverse;
+}
+
+/* Avatar central */
 .avatar {
-  width: 90px; height: 90px;
+  position: absolute;
+  top: 8px; left: 8px;
+  width: 94px; height: 94px;
   border-radius: 50%;
   background: linear-gradient(135deg, #1a1a2e, #16213e);
   border: 2px solid rgba(255,255,255,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 30px rgba(29,155,240,0.1);
-  transition: transform 0.3s ease;
+  z-index: 2;
+  animation: pulse-avatar 2s ease-in-out infinite;
+  overflow: hidden;
 }
 
-.avatar:hover {
-  transform: scale(1.05);
+.avatar::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(
+    transparent, 
+    rgba(74,222,128,0.1), 
+    transparent, 
+    rgba(29,155,240,0.1), 
+    transparent
+  );
+  animation: spin 4s linear infinite;
 }
 
-.avatar svg { width: 55px; height: 55px; }
+.avatar svg { 
+  width: 55px; 
+  height: 55px;
+  position: relative;
+  z-index: 1;
+}
 
+/* Partículas flotantes */
+.avatar-particles {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 3;
+}
+
+.avatar-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+  animation: float-particle 3s ease-in-out infinite;
+}
+
+.avatar-particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.avatar-particle:nth-child(2) { top: 20%; right: 15%; animation-delay: -0.5s; background: #1d9bf0; box-shadow: 0 0 8px #1d9bf0; }
+.avatar-particle:nth-child(3) { bottom: 25%; left: 10%; animation-delay: -1s; }
+.avatar-particle:nth-child(4) { bottom: 15%; right: 20%; animation-delay: -1.5s; background: #ffa500; box-shadow: 0 0 8px #ffa500; }
+.avatar-particle:nth-child(5) { top: 40%; left: 5%; animation-delay: -2s; background: #ff4444; box-shadow: 0 0 8px #ff4444; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-avatar {
+  0%, 100% { box-shadow: 0 0 20px rgba(74,222,128,0.3), 0 0 40px rgba(29,155,240,0.1); }
+  50% { box-shadow: 0 0 35px rgba(74,222,128,0.5), 0 0 60px rgba(29,155,240,0.3); }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0px); opacity: 1; }
+  50% { transform: translateY(-8px); opacity: 0.5; }
+}
+
+/* Badge WiFi */
 .wifi-badge {
   position: absolute;
-  bottom: 2px; right: 2px;
-  width: 28px; height: 28px;
+  bottom: 0px; right: 0px;
+  width: 30px; height: 30px;
   background: var(--success);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid #0a0a0a;
-  box-shadow: 0 0 15px rgba(77,222,128,0.5);
+  box-shadow: 0 0 20px rgba(77,222,128,0.6);
   animation: pulse-badge 2s ease-in-out infinite;
+  z-index: 5;
 }
 
 @keyframes pulse-badge {
   0%, 100% { box-shadow: 0 0 15px rgba(77,222,128,0.5); }
-  50% { box-shadow: 0 0 25px rgba(77,222,128,0.8); }
+  50% { box-shadow: 0 0 30px rgba(77,222,128,0.9); }
 }
 
 .wifi-badge svg { width: 14px; height: 14px; fill: white; }
@@ -344,10 +437,7 @@ canvas {
   font-size: 18px;
 }
 
-.input-wrap .toggle-password:hover {
-  color: #fff;
-}
-
+.input-wrap .toggle-password:hover { color: #fff; }
 .input-wrap input::placeholder { color: #444; }
 
 .btn-connect {
@@ -372,19 +462,9 @@ canvas {
   box-shadow: 0 10px 30px rgba(255,255,255,0.2);
 }
 
-.btn-connect:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-connect:disabled { 
-  opacity: 0.5; 
-  cursor: not-allowed;
-}
-
-.btn-connect.success {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  color: white;
-}
+.btn-connect:active:not(:disabled) { transform: translateY(0); }
+.btn-connect:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-connect.success { background: linear-gradient(135deg, #4ade80, #22c55e); color: white; }
 
 .btn-buy {
   width: 100%; 
@@ -440,10 +520,7 @@ canvas {
   max-width: 380px;
 }
 
-.footer:hover {
-  color: #555;
-  transition: color 0.3s;
-}
+.footer:hover { color: #555; transition: color 0.3s; }
 
 .loading-spinner {
   display: inline-block;
@@ -456,16 +533,11 @@ canvas {
   margin-right: 8px;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
 @media (max-width: 480px) {
   .card {
     padding: 24px 20px;
     margin: 0 12px;
   }
-  
   .badge {
     font-size: 10px;
     padding: 4px 10px;
@@ -488,12 +560,22 @@ canvas {
   <canvas id="bg"></canvas>
   <div class="glow"></div>
   <div class="content">
+    <!-- LOGO ANIMADO -->
     <div class="avatar-wrap">
+      <div class="logo-ring-outer"></div>
+      <div class="logo-ring-inner"></div>
       <div class="avatar">
         <svg viewBox="0 0 342 342" fill="none">
           <path d="M171 50 L230 160 L280 120 L260 220 L171 260 L82 220 L62 120 L112 160 Z" fill="#cc0000"/>
           <line x1="60" y1="200" x2="282" y2="200" stroke="#cc0000" stroke-width="6"/>
         </svg>
+      </div>
+      <div class="avatar-particles">
+        <div class="avatar-particle"></div>
+        <div class="avatar-particle"></div>
+        <div class="avatar-particle"></div>
+        <div class="avatar-particle"></div>
+        <div class="avatar-particle"></div>
       </div>
       <div class="wifi-badge">
         <svg viewBox="0 0 24 24"><path d="M1.5 8.5a13 13 0 0121 0M5 12a10 10 0 0114 0M8.5 15.5a6 6 0 017 0M12 19h.01" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
@@ -547,7 +629,7 @@ canvas {
         <div class="input-wrap" id="keyWrap">
           <svg viewBox="0 0 24 24"><path d="M12.65 10A6 6 0 1010 12.65L20 22.65l2-2-1.5-1.5L22 17.65l-1.5-1.5 1.5-1.5-2.35-2.35L10 22.65A6 6 0 0012.65 10zM7 11a2 2 0 110-4 2 2 0 010 4z"/></svg>
           <input type="password" id="keyInput" placeholder="Ingresa tu key de acceso" autocomplete="current-password">
-          <button type="button" class="toggle-password" id="togglePassword" aria-label="Mostrar contraseña">👁</button>
+          <button type="button" class="toggle-password" id="togglePassword">👁</button>
         </div>
         <div class="error-msg" id="keyError">⚠️ Ingresa tu key de acceso</div>
       </div>
@@ -574,21 +656,16 @@ canvas {
 </div>
 
 <script>
-// ============ CONFIGURACIÓN ============
 const SUPABASE_URL = "https://ljqxqxfspzbjecbjiyza.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqcXhxeGZzcHpiamVjYmppeXphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0OTU1NDQsImV4cCI6MjA5MzA3MTU0NH0.IyiBIvBrbAVTbrxYjKh1Nu28gn_Nx5q7KKQIawM7t0M";
-const REDIRECT_URL = "https://google.com"; // Cambia esto por tu URL final
-
-// ============ INICIALIZAR SUPABASE ============
+const REDIRECT_URL = "https://google.com";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ============ PANTALLA DE CARGA ============
 let progress = 0;
 let bar = document.getElementById("progress");
 let boot = document.getElementById("boot");
 let app = document.getElementById("app");
 
-// Toggle contraseña
 document.getElementById('togglePassword').addEventListener('click', function() {
   const keyInput = document.getElementById('keyInput');
   const type = keyInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -596,7 +673,6 @@ document.getElementById('togglePassword').addEventListener('click', function() {
   this.textContent = type === 'password' ? '👁' : '🙈';
 });
 
-// Enter para enviar
 document.getElementById('keyInput').addEventListener('keypress', function(e) {
   if (e.key === 'Enter') conectar();
 });
@@ -618,10 +694,7 @@ function updateProgress() {
       setTimeout(() => {
         boot.style.display = "none";
         app.style.display = "flex";
-        setTimeout(() => { 
-          app.style.opacity = 1; 
-          startBg(); 
-        }, 50);
+        setTimeout(() => { app.style.opacity = 1; startBg(); }, 50);
       }, 800);
     }, 200);
   }
@@ -629,14 +702,11 @@ function updateProgress() {
 
 setTimeout(updateProgress, 500);
 
-// ============ FUNCIONES AUXILIARES ============
 function showError(elementId, message) {
   const el = document.getElementById(elementId);
   el.textContent = message;
   el.style.display = 'block';
-  setTimeout(() => {
-    el.style.display = 'none';
-  }, 5000);
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
 }
 
 function clearErrors() {
@@ -644,7 +714,6 @@ function clearErrors() {
   document.querySelectorAll('.input-wrap').forEach(el => el.classList.remove('error'));
 }
 
-// ============ CONECTAR CON SUPABASE ============
 async function conectar() {
   const username = document.getElementById("username").value.trim();
   const key = document.getElementById("keyInput").value.trim();
@@ -655,7 +724,6 @@ async function conectar() {
 
   clearErrors();
 
-  // Validar campos
   if (!username) {
     userWrap.classList.add("error");
     showError('userError', '⚠️ Por favor ingresa tu nombre de usuario');
@@ -670,22 +738,17 @@ async function conectar() {
     return;
   }
 
-  // Mostrar loading
   btn.disabled = true;
   btnText.innerHTML = '<span class="loading-spinner"></span> Verificando...';
 
   try {
-    // Obtener IP del usuario
     let userIP = 'desconocida';
     try {
       const ipRes = await fetch('https://api.ipify.org?format=json');
       const ipData = await ipRes.json();
       userIP = ipData.ip;
-    } catch(e) {
-      console.log('No se pudo obtener IP');
-    }
+    } catch(e) {}
 
-    // Llamar a la función RPC de Supabase
     const { data, error } = await supabaseClient.rpc('consume_key', {
       key_value: key,
       username_param: username,
@@ -695,45 +758,32 @@ async function conectar() {
     if (error) throw error;
 
     if (data.success) {
-      // ÉXITO
       btnText.innerHTML = '✓ Acceso concedido';
       btn.classList.add('success');
-      
-      document.getElementById("successMsg").textContent = '✅ ¡Acceso concedido! Redirigiendo...';
       document.getElementById("successMsg").style.display = "block";
       
-      // Guardar sesión
       sessionStorage.setItem('auth_user', username);
       sessionStorage.setItem('auth_key', key);
       
-      // Redirigir
-      setTimeout(() => {
-        window.location.href = REDIRECT_URL;
-      }, 1500);
-      
+      setTimeout(() => { window.location.href = REDIRECT_URL; }, 1500);
     } else {
-      // KEY INVÁLIDA
       keyWrap.classList.add("error");
-      const errorMsg = data.error || 'Key inválida, expirada o sin usos disponibles';
-      document.getElementById("errorMsg").textContent = '❌ ' + errorMsg;
+      document.getElementById("errorMsg").textContent = '❌ ' + (data.error || 'Key inválida');
       document.getElementById("errorMsg").style.display = "block";
       btn.disabled = false;
       btnText.textContent = "Conectar";
-      
-      // Animación de shake
       btn.style.animation = "shake 0.5s ease";
       setTimeout(() => btn.style.animation = "", 500);
     }
   } catch (e) {
     console.error("Error:", e);
-    document.getElementById("errorMsg").textContent = "❌ Error de conexión. Intenta de nuevo.";
+    document.getElementById("errorMsg").textContent = "❌ Error de conexión";
     document.getElementById("errorMsg").style.display = "block";
     btn.disabled = false;
     btnText.textContent = "Conectar";
   }
 }
 
-// ============ FONDO DE PARTÍCULAS ============
 function startBg() {
   const canvas = document.getElementById("bg");
   const ctx = canvas.getContext("2d");
